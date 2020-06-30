@@ -90,4 +90,18 @@ describe('memer-be routes', () => {
         }
       ));
   });
+
+  it('can update a meme by id via findByIdAndUpdate', async() => {
+    return request(app)
+      .patch(`/api/v1/memes/${memes[1]._id}`)
+      .send({
+        bottom: 'living in a meme?'
+      })
+      .then(res => expect(res.body).toEqual(
+        {
+          ...memes[1],
+          bottom: 'living in a meme?'
+        }
+      ));
+  });
 });
