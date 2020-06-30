@@ -20,4 +20,21 @@ describe('memer-be routes', () => {
     await mongoose.connection.close();
     return mongod.stop();
   });
+
+  it('creates a meme via POST', () => {
+    return request(app)
+      .post('/api/v1/memes')
+      .send({
+        top: 'THIS',
+        image: 'https://i.imgur.com/f1xrc22.jpg',
+        bottom: 'seems okay'
+      })
+      .then(res => expect(res.body).toEqual({
+        top: 'THIS',
+        image: 'https://i.imgur.com/f1xrc22.jpg',
+        bottom: 'seems okay',
+        _id: expect.anything(),
+        __v: 0
+      }));
+  });
 });
