@@ -18,6 +18,23 @@ describe('memer-be routes', () => {
     return mongoose.connection.dropDatabase();
   });
 
+  let memes = [];
+  beforeEach(async() => {
+    memes = await Meme
+      .create([
+        {
+          top: 'THIS',
+          image: 'https://i.imgur.com/f1xrc22.jpg',
+          bottom: 'seems okay'
+        },
+        {
+          top: 'Am I',
+          image: 'https://i.imgur.com/f1xrc22.jpg',
+          bottom: 'ON FIRE?'
+        }
+      ]);
+  });
+
   afterAll(async() => {
     await mongoose.connection.close();
     return mongod.stop();
@@ -40,20 +57,6 @@ describe('memer-be routes', () => {
       }));
   });
   it('gets all memes via find', async() => {
-    await Meme
-      .create([
-        {
-          top: 'THIS',
-          image: 'https://i.imgur.com/f1xrc22.jpg',
-          bottom: 'seems okay'
-        },
-        {
-          top: 'Am I',
-          image: 'https://i.imgur.com/f1xrc22.jpg',
-          bottom: 'ON FIRE?'
-        }
-      ]);
-    
     return request(app)
       .get('/api/v1/memes')
       .then(res => expect(res.body).toEqual([
@@ -72,5 +75,19 @@ describe('memer-be routes', () => {
           __v: 0
         }
       ]));
+  });
+
+  it('can get a meme by id via findById', async() => {
+    return request(app)
+      .get(`/api/v1/memes/${memes[1]._id}`)
+      .then(res => expect(res.body).toEqual(
+        {
+          top: 'Am I',
+          image: 'https://i.imgur.com/f1xrc22.jpg',
+          bottom: 'ON FIRE?',
+          _id: expect.anything(),
+          __v: 0
+        }
+      ));
   });
 });
