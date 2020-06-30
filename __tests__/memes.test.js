@@ -33,6 +33,8 @@ describe('memer-be routes', () => {
           bottom: 'ON FIRE?'
         }
       ]);
+
+    memes = JSON.parse(JSON.stringify(memes));
   });
 
   afterAll(async() => {
