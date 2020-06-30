@@ -110,6 +110,6 @@ describe('memer-be routes', () => {
   it('can delete a meme by id via findByIdAndDelete', async() => {
     return request(app)
       .delete(`/api/v1/memes/${memes[0]._id}`)
-      .then(res => expect(res.body).toEqual(...memes[0]));
+      .then(res => expect(res.body).toEqual(memes[0]));
   });
 });
