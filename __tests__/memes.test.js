@@ -6,6 +6,8 @@ const connect = require('../lib/utils/connect');
 const request = require('supertest');
 const app = require('../lib/app');
 
+const Meme = require('../lib/models/Meme');
+
 describe('memer-be routes', () => {
   beforeAll(async() => {
     const uri = await mongod.getUri();
@@ -36,5 +38,39 @@ describe('memer-be routes', () => {
         _id: expect.anything(),
         __v: 0
       }));
+  });
+  it('gets all memes via find', async() => {
+    await Meme
+      .create([
+        {
+          top: 'THIS',
+          image: 'https://i.imgur.com/f1xrc22.jpg',
+          bottom: 'seems okay'
+        },
+        {
+          top: 'Am I',
+          image: 'https://i.imgur.com/f1xrc22.jpg',
+          bottom: 'ON FIRE?'
+        }
+      ]);
+    
+    return request(app)
+      .get('/api/v1/memes')
+      .then(res => expect(res.body).toEqual([
+        {
+          top: 'THIS',
+          image: 'https://i.imgur.com/f1xrc22.jpg',
+          bottom: 'seems okay',
+          _id: expect.anything(),
+          __v: 0
+        },
+        {
+          top: 'Am I',
+          image: 'https://i.imgur.com/f1xrc22.jpg',
+          bottom: 'ON FIRE?',
+          _id: expect.anything(),
+          __v: 0
+        }
+      ]));
   });
 });
